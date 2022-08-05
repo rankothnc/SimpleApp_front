@@ -45,6 +45,15 @@ const getUsers=async()=>{
                   <td>{item.name}</td>
                   <td>{item.email}</td>
                   <td>{item.contact}</td>
+                  <td>
+                    <Link to={`/update:${item.id}`}>
+                    <button className='btn btn-edit'>Edit</button>
+                    </Link>
+                    <button className='btn btn-delete'>Delete</button>
+                    <Link to={`/view:${item.id}`}>
+                    <button className='btn btn-view'>View</button>
+                    </Link>
+                  </td>
                 </tr>
               )
             })}

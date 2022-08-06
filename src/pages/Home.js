@@ -3,6 +3,7 @@ import {Link} from "react-router-dom";
 import "./Home.css";
 //To make the API request
 import axios from "axios";
+import { toast } from 'react-toastify';
 
 const Home = () => {
   //Stroe all the data in the array
@@ -21,6 +22,17 @@ const getUsers=async()=>{
     setData(response.data);
   }
 };
+
+const onDeleteUser = async(id) =>{
+  if(window.confirm("Are you sure that you want to delete that user")){
+    const response = await axios.delete(`http://localhost:5000/user/${id}`);
+    if(response.status === 200){
+      toast.success(response.data);
+      //to show existing user data after delete the particular row
+      getUsers();
+    }
+  }
+}
 
 //to verify whether data is getting or not
   console.log("data=>", data);
@@ -49,7 +61,7 @@ const getUsers=async()=>{
                     <Link to={`/update:${item.id}`}>
                     <button className='btn btn-edit'>Edit</button>
                     </Link>
-                    <button className='btn btn-delete'>Delete</button>
+                    <button className='btn btn-delete' onClick={()=> onDeleteUser(item.id)}>Delete</button>
                     <Link to={`/view:${item.id}`}>
                     <button className='btn btn-view'>View</button>
                     </Link>

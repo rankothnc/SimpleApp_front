@@ -1,31 +1,56 @@
 import React, { useState, useEffect } from 'react'
-import { unstable_HistoryRouter, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import axios from 'axios';
 import "./AddEdit.css";
+import { toast} from 'react-toastify';
 
 //define initial state of the home component
 const initialState = {
   name: "",
   email: "",
   contact: "",
-};
-
+}; 
+ 
 const AddEdit = () => {
 
   const [state, setState] = useState(initialState);
 
-  const { name, email, contact } = initialState;
+  const { name, email, contact } = state;
+
+  const navigate = useNavigate();
+
+  // const {id} = useParams();
+  // useEffect(()=>{
+  //   //if there is an id
+  //   if(id){
+  //     getSingleUser(id);
+  //   }
+  // },[id])
+
+  // const getSingleUser = async (id)=>{
+  //   const response = await axios.get(`http://localhost:5000/user/${id}`);
+  //   if(response.status === 200){
+  //     setState({...response.data[0]});
+  //   }
+  // }
 
   const addContact = async (data) =>{
     const response = await axios.post("http://localhost:5000/user",data);
     if(response.status === 200){
-      TransformStream.success(response.data);
+      toast.success(response.data);
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e) => { 
     e.preventDefault();
-    addContact(state);
+    if(!name || !email || !contact){
+      toast.error("Please provide value into each input field");
+    }else{
+      addContact(state);
+      //navigate towards the home page after add a new user
+      navigate.push("/");
+    }
+
   }
 
   const handleInputChange = (e) => {
@@ -43,19 +68,28 @@ const AddEdit = () => {
       
       onSubmit={handleSubmit}
       >
-        <label htmlFor='name'>Name</label>
+        <label htmlFor="name">Name</label>
         <input
           type="text"
           id="name"
+          name="name"
           placeholder="Enter Name ..."
-          onChange={handleInputChange}
-          value={name}
+          //onChange={handleInputChange}
+          onChange={this.onChange}
+          value={this.state.name}
         />
+        {/* <input
+          type="text"
+          value={this.props.searchString}
+          ref="searchStringInput"
+          onChange={this.onChange}
+        /> */}
 
         <label htmlFor='email'>Email</label>
         <input
           type="email"
           id="email"
+          name="email"
           placeholder="Enter Email ..."
           onChange={handleInputChange}
           value={email}
@@ -64,7 +98,8 @@ const AddEdit = () => {
         <label htmlFor='contact'>Contact</label>
         <input
           type="number"
-          id="number"
+          id="contact"
+          name="contact"
           placeholder="Enter Contact No ..."
           onChange={handleInputChange}
           value={contact}
